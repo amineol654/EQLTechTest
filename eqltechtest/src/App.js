@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import Registration from './components/registration';
+import Quiz from './components/quiz';
+import Score from './components/score';
 
-function App() {
+// Could introduce Typescript for greater control over typings
+const App = () => {
+  const [user, setUser] = useState(null);
+  const [score, setScore] = useState(null);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  const handleRegister = (userData) => {
+    setUser(userData);
+  };
+
+  const handleQuizComplete = (finalScore) => {
+    setScore(finalScore);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-         New App
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {/* Perhaps using react router to navigate from one page to the next */}
+      {!user ? (
+        <Registration onRegister={handleRegister} />
+      ) : score === null ? (
+        <Quiz onQuizComplete={handleQuizComplete} />
+      ) : (
+        <Score score={score} />
+      )}
     </div>
   );
 }
